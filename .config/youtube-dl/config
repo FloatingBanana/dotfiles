@@ -1,0 +1,5 @@
+-o ~/storage/shared/_ytdl/%(title)s.%(ext)s
+
+-f best[height<=720]
+
+--external-downloader aria2c --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M'
