@@ -13,3 +13,4 @@ vim.o.termguicolors = true
 vim.o.completeopt = "menu,menuone,noselect"
 
 require("bufferline").setup {}
+require("telescope").load_extension "file_browser"
