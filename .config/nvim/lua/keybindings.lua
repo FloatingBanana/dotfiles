@@ -8,6 +8,8 @@ wk.add {
 	{'<leader>fg', '<Cmd>Telescope live_grep<CR>',    desc = 'Grep find'},
 	{'<leader>fb', '<Cmd>Telescope buffers<CR>',      desc = 'Find buffers'},
 	{'<leader>fd', '<Cmd>Telescope file_browser<CR>', desc = 'File browser'},
+	{'<leader>fd', '<Cmd>Telescope git_status<CR>',   desc = 'Git modified files'},
+	{'<leader>ft', '<Cmd>NvimTreeToggle<CR>',         desc = 'Toggle file tree'},
 
 
 	-- Move lines
