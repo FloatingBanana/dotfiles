@@ -3,8 +3,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 export ZSH="$HOME/.oh-my-zsh"
+export KEYTIMEOUT=1
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
 ZSH_TMUX_AUTOSTART="true"
 ZSH_TMUX_AUTOQUIT="true"
 
@@ -53,8 +53,13 @@ export EDITOR='nvim'
 alias zshconfig="nvim ~/.zshrc"
 alias tmux='tmux -2'
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias cfzf="fzf -m --ansi --preview='bat {}'"
+alias rish="exec ~/.rish/rish"
+alias gmfzf='git ls-files -dmo --deduplicate | fzf -m --ansi --preview="git diff -u --color=always {} | diff-so-fancy"'
 
 setopt complete_aliases
+
+bindkey -v
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
