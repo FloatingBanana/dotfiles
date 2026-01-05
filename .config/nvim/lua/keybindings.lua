@@ -2,7 +2,7 @@ local wk = require "which-key"
 local dap = require "dap"
 
 wk.add {
-	-- Telescope
+	-- Files
 	{'<leader>f', group = 'Telescope find'},
 	{'<leader>ff', '<Cmd>Telescope find_files<CR>',   desc = 'Find file'},
 	{'<leader>fg', '<Cmd>Telescope live_grep<CR>',    desc = 'Grep find'},
@@ -10,10 +10,11 @@ wk.add {
 	{'<leader>fd', '<Cmd>Telescope file_browser<CR>', desc = 'File browser'},
 	{'<leader>fs', '<Cmd>Telescope git_status<CR>',   desc = 'Git modified files'},
 	{'<leader>ft', '<Cmd>NvimTreeToggle<CR>',         desc = 'Toggle file tree'},
-
-
-	-- Move lines
-	{'<A-Up>',   '<Cmd>:move .-2<CR>',       mode = {'i', 'n'}},
+ 
+ 	{'<leader>t', '<Cmd>lua require("FTerm").toggle()<CR>', desc = "Toggle terminal"},
+ 
+ 	-- Move lines
+ 	{'<A-Up>',   '<Cmd>:move .-2<CR>',       mode = {'i', 'n'}},
 	{'<A-Down>', '<Cmd>:move .+1<CR>',       mode = {'i', 'n'}},
 	{'<A-Up>',   "<Cmd>:move '<-2<CR>gv=gv", mode = 'v'},
 	{'<A-Down>', "<Cmd>:move '>+1<CR>gv=gv", mode = 'v'},

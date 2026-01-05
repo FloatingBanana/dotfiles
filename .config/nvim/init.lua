@@ -12,5 +12,14 @@ vim.o.relativenumber = true
 vim.o.termguicolors = true
 vim.o.completeopt = "menu,menuone,noselect"
 
-require("bufferline").setup {}
 require("telescope").load_extension "file_browser"
+
+require("bufferline").setup {}
+
+require("lualine").setup {
+	extensions = {'trouble', 'lazy'},
+
+  sections = {
+    lualine_c = {'filename', 'lsp_status'}
+	}
+}
