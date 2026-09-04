@@ -31,6 +31,27 @@ vim.lsp.config('lua_ls', {
 	}
 })
 
-vim.lsp.config('pyright', {})
+vim.lsp.config('zls', {
+	settings = {
+		enable_build_on_save = true,
+		enable_argument_placeholders = true,
+	}
+})
 
+vim.lsp.config('qmlls', {cmd = {'qmlls6'}})
+
+vim.lsp.enable('pyright')
 vim.lsp.enable('clangd')
+vim.lsp.enable('zls')
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('glsl_analyzer')
+vim.lsp.enable('qmlls')
+
+
+vim.diagnostic.config({
+	update_in_insert = true,
+	underline = true,
+	severity_sort = true;
+	float = {source = "always"},
+	virtual_text = {prefix = '●'},
+})

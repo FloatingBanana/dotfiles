@@ -1,23 +1,42 @@
 local wk = require "which-key"
 local dap = require "dap"
+local dapwidgets = require "dap.ui.widgets"
 
 wk.add {
 	-- Files
 	{'<leader>f', group = 'Telescope find'},
-	{'<leader>ff', '<Cmd>Telescope find_files<CR>',   desc = 'Find file'},
-	{'<leader>fg', '<Cmd>Telescope live_grep<CR>',    desc = 'Grep find'},
-	{'<leader>fb', '<Cmd>Telescope buffers<CR>',      desc = 'Find buffers'},
-	{'<leader>fd', '<Cmd>Telescope file_browser<CR>', desc = 'File browser'},
-	{'<leader>fs', '<Cmd>Telescope git_status<CR>',   desc = 'Git modified files'},
-	{'<leader>ft', '<Cmd>NvimTreeToggle<CR>',         desc = 'Toggle file tree'},
- 
- 	{'<leader>t', '<Cmd>lua require("FTerm").toggle()<CR>', desc = "Toggle terminal"},
- 
- 	-- Move lines
- 	{'<A-Up>',   '<Cmd>:move .-2<CR>',       mode = {'i', 'n'}},
-	{'<A-Down>', '<Cmd>:move .+1<CR>',       mode = {'i', 'n'}},
-	{'<A-Up>',   "<Cmd>:move '<-2<CR>gv=gv", mode = 'v'},
-	{'<A-Down>', "<Cmd>:move '>+1<CR>gv=gv", mode = 'v'},
+	{'<leader>ff', '<cmd>Telescope find_files<CR>',   desc = 'Find file'},
+	{'<leader>fg', '<cmd>Telescope live_grep<CR>',    desc = 'Grep find'},
+	{'<leader>fb', '<cmd>Telescope buffers<CR>',      desc = 'Find buffers'},
+	{'<leader>fs', '<cmd>Telescope git_status<CR>',   desc = 'Git modified files'},
+	{'<leader>fd', '<cmd>Yazi<CR>',                   desc = 'Open Yazi'},
+
+ 	{'<leader>t', require("FTerm").toggle, desc = "Toggle terminal"},
+
+
+	{"<C-S-d>", "<cmd>bd<CR>",  mode = "n"},
+	{"<C-s>",   "<cmd>w<CR>",   mode = "n"},
+	{"<C-BS>",  "<cmd>noh<CR>", mode = "n"},
+	{"<C-d>",   "<C-d>zz",      mode = "n"},
+	{"<C-u>",   "<C-u>zz",      mode = "n"},
+	{"jj",    	"<Esc>",        mode = "i"},
+	{"n",       "nzzzv",        mode = {"n", "v"}},
+	{"N",       "Nzzzv",        mode = {"n", "v"}},
+	{">",       ">gv",          mode = "v"},
+	{"<",       "<gv",          mode = "v"},
+
+	{'<C-k>', "<cmd>move '<-2<CR>gv=gv", mode = 'v'},
+	{'<C-j>', "<cmd>move '>+1<CR>gv=gv", mode = 'v'},
+
+	{"<C-h>", "<C-w>h", mode = "n"},
+	{"<C-j>", "<C-w>j", mode = "n"},
+	{"<C-k>", "<C-w>k", mode = "n"},
+	{"<C-l>", "<C-w>l", mode = "n"},
+
+	{"<C-S-l>", "<cmd>bn<CR>", mode = "n"},
+	{"<C-S-h>", "<cmd>bp<CR>", mode = "n"},
+	{"<C-S-j>", "<cmd>tabNext<CR>", mode = "n"},
+	{"<C-S-k>", "<cmd>tabprevious<CR>", mode = "n"},
 
 
 	--LSP
@@ -32,48 +51,58 @@ wk.add {
 
 
 	--Debugger
-	{'<leader>d',   group = 'Debugger'},
+	{'<leader>d',  group = 'Debugger'},
+	{'<leader>dc', dap.continue,     desc = 'Continue'  },
+	{'<leader>dd', dapwidgets.hover, desc = 'Hover'     },
+	{'<leader>di', dap.repl.open,    desc = 'Open REPL' },
+
+	{'<leader>dq', group = 'Entities'},
+	{'<leader>dqq', function()dapwidgets.centered_float(dapwidgets.scopes)end,   desc = 'View scope'},
+	{'<leader>dqf', function()dapwidgets.centered_float(dapwidgets.frames)end,   desc = 'View frames'},
+	{'<leader>dqt', function()dapwidgets.centered_float(dapwidgets.threads)end,  desc = 'View threads'},
+	{'<leader>dqs', function()dapwidgets.centered_float(dapwidgets.sessions)end, desc = 'View sessions'},
+
+	{'<leader>ds',  group = 'Step'},
+	{'<leader>dso', dap.step_out,  desc = 'Step out'},
+	{'<leader>dsv', dap.step_over, desc = 'Step in'},
+
 	{'<leader>db',  group = 'Breakpoints'},
-	{'<leader>dc',  dap.continue,          desc = 'Continue'},
-	{'<leader>dso', dap.step_out,          desc = 'Step out'},
-	{'<leader>dsv', dap.step_over,         desc = 'Step in'},
-	{'<leader>di',  dap.repl.open,         desc = 'Open REPL'},
 	{'<leader>dbb', dap.toggle_breakpoint, desc = 'Toggle breakpoint'},
 
-	{'<leader>dbc', function()
+	{'<leader>dbc', desc = 'Conditional breakpoint', function()
 		vim.fn.inputsave()
 		dap.toggle_breakpoint(vim.fn.input('condition: ', 'true'))
 		vim.fn.inputrestore()
-	end, desc = 'Conditional breakpoint'},
+	end},
 
-	{'<leader>dbn', function()
+	{'<leader>dbn', desc = 'Counting breakpoint', function()
 		vim.fn.inputsave()
 		dap.toggle_breakpoint(nil, vim.fn.input('hit count: ', "1"))
 		vim.fn.inputrestore()
-	end, desc = 'Counting breakpoint'},
+	end},
 
-	{'<leader>dbl', function()
+	{'<leader>dbl', desc = 'Log breakpoint', function()
 		vim.fn.inputsave()
 		dap.toggle_breakpoint(nil, nil, vim.fn.input('log message: ', ''))
 		vim.fn.inputrestore()
-	end, desc = 'Log breakpoint'},
+	end},
 }
 
-vim.lsp.config('lua_ls', {
-	on_attach = function(client, bufnr)
+local function on_attach(client, bufnr)
+	vim.api.nvim_buf_set_var(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+	wk.add {
+		{buffer = bufnr},
 
-		vim.api.nvim_buf_set_var(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-		wk.add {
-			{buffer = bufnr},
+		{"<leader>lk",  vim.lsp.buf.hover,          desc = 'Hover'},
+		{"<leader>ls",  vim.lsp.buf.signature_help, desc = 'View signature'},
+		{"<leader>ln",  vim.lsp.buf.rename,         desc = 'Rename symbol'},
 
-			{"<leader>lh",  vim.lsp.buf.hover,          desc = 'Hover'},
-			{"<leader>ls",  vim.lsp.buf.signature_help, desc = 'View signature'},
-			{"<leader>ln",  vim.lsp.buf.rename,         desc = 'Rename symbol'},
+		{'<leader>lw', group = "Workspace"},
+		{'<leader>lwa', vim.lsp.buf.add_workspace_folder,    desc = 'Add folder to workspace'},
+		{'<leader>lwr', vim.lsp.buf.remove_workspace_folder, desc = 'Remove fder from workspace'},
+		{'<leader>lwl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, desc = 'List folders in the workspace'},
+	}
+end
 
-			{'<leader>lw', group = "Workspace"},
-			{'<leader>lwa', vim.lsp.buf.add_workspace_folder,    desc = 'Add folder to workspace'},
-			{'<leader>lwr', vim.lsp.buf.remove_workspace_folder, desc = 'Remove fder from workspace'},
-			{'<leader>lwl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, desc = 'List folders in the workspace'},
-		}
-	end
-})
+vim.lsp.config('lua_ls', {on_attach = on_attach})
+vim.lsp.config('zls', {on_attach = on_attach})

@@ -1,0 +1,23 @@
+[mgr]
+show_hidden = true
+
+[opener]
+edit = [
+	{run = 'nvim %s', block = true},
+	{run = 'libreoffice %s', orphan = true},
+]
+image = [
+			{run = "chafa %s --clear -d inf", block = true}
+]
+wine = [
+	{run = 'wine %s', orphan = true},
+]
+proton = [
+	{run = 'proton-ge %s', orphan = true},
+]
+
+[open]
+prepend_rules = [
+	{url = "*.exe", use = ["wine", "proton"]},
+	{mime = "image/*", use = "image"}
+]

@@ -1,0 +1,1 @@
+/home/thales/.cache/wal/colors.qml

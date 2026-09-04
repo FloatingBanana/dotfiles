@@ -3,30 +3,41 @@ local dap = require "dap"
 --------------
 -- Adapters --
 --------------
-dap.adapters.lldb = {
+dap.adapters.codelldb = {
 	type = 'executable',
-	command = '/usr/bin/lldb-vscode',
-	name = 'lldb'
+	name = 'lldb',
+	command = '/usr/bin/codelldb',
 }
-
+--dap.adapters.codelldb = {
+--	type = "server",
+--	port = "${port}",
+--	executable = {
+--		command = "/usr/bin/codelldb",
+--		args = {"--port", "${port}"},
+--	}
+--}
 
 
 ---------------
 -- Languages --
 ---------------
-dap.configurations.rust = {
+dap.configurations.zig = {
 	{
-		name = 'Launch',
-		type = 'lldb',
+		name = 'Build and launch',
+		type = 'codelldb',
 		request = 'launch',
-		program = function()
-			return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-		end,
+		program = "/usr/bin/zig",
 		cwd = '${workspaceFolder}',
 		stopOnEntry = false,
-		args = {'--arch x86_64'}
-	}
+		args = {"build", "run"},
+	},
+	{
+		name = 'Launch',
+		type = 'codelldb',
+		request = 'launch',
+		program = "${workspaceFolder}/zig-out/bin/${workspaceFolderBasename}",
+		cwd = '${workspaceFolder}',
+		stopOnEntry = false,
+		args = {},
+	},
 }
-
-dap.configurations.c = dap.configurations.rust
-dap.configurations.cpp = dap.configurations.rust

@@ -1,0 +1,3 @@
+module CustomStyle
+singleton Style 1.0 Style.qml
+WalColors 1.0 WalColors.qml
